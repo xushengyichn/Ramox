@@ -24,6 +24,17 @@ import wxpy
 
 from utils import *
 
+import itchat
+import html
+import wxpy
+
+# Monkey patch for itchat.utils.msg_formatter
+def new_msg_formatter(d, k):
+    d[k] = html.unescape(d[k])
+
+itchat.utils.msg_formatter = new_msg_formatter
+
+
 bot = wxpy.Bot(cache_path=True)
 cache = []
 
@@ -287,7 +298,7 @@ def reply_msg(msg: wxpy.Message) -> None:
                     }, 'Send image', 'Send file'])
     else:
         display = f'{msg.chat.name}({msg.member.name if msg.member is not None else msg.sender.name}) sends you a message that is currently not supported.'
-        toast(display)
+        # toast(display)
         return
     try:
         if res['arguments'] == 'http:':
